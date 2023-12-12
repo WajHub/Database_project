@@ -1,4 +1,4 @@
-CREATE DATABASE Tenis_stolowy;
+--CREATE DATABASE Tenis_stolowy;
 USE Tenis_stolowy;
 
 
@@ -52,6 +52,8 @@ CREATE TABLE Druzyna(
 
 CREATE TABLE Osoba (
     Pesel VARCHAR(11) PRIMARY KEY,
+    Imie Varchar(31) NOT NULL,
+    Nazwisko Varchar(31) NOT NULL,
     Narodowosc VARCHAR(50) NOT NULL,
     Zarobki DECIMAL(7, 2),
     Data_urodzenia DATE
@@ -64,7 +66,7 @@ CREATE TABLE Trener(
     Specjalizacja VARCHAR (255) NOT NULL
     FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
     FOREIGN KEY (Druzyna) REFERENCES Druzyna(Nazwa)
-)
+);
 
 CREATE TABLE Liga (
     Id_ligi INT IDENTITY(1,1) PRIMARY KEY,
@@ -74,7 +76,8 @@ CREATE TABLE Liga (
 CREATE TABLE Zespol(
     Zespol_id INT IDENTITY(1,1) PRIMARY KEY,
     Nazwa VARCHAR(255) NOT NULL,
-    FOREIGN KEY (Nazwa) REFERENCES Druzyna(Nazwa)
+    FOREIGN KEY (Nazwa) REFERENCES Druzyna(Nazwa),
+    Id_ligi INT FOREIGN KEY (Id_ligi) REFERENCES Liga(Id_ligi)
 );
 
 CREATE TABLE Zawodnik (
@@ -85,14 +88,14 @@ CREATE TABLE Zawodnik (
     Styl_gry INT NOT NULL,
     FOREIGN KEY (Styl_gry) REFERENCES Styl_gry(Styl_id),
     Deska VARCHAR(31) NOT NULL,
-    Druzyna VARCHAR(255),
-    FOREIGN KEY (Druzyna) REFERENCES Druzyna(Nazwa),
+    Zespol INT,
+    FOREIGN KEY (Zespol) REFERENCES Zespol(Zespol_id),
 );
 
 CREATE TABLE Sedzia(
     Pesel VARCHAR(11) PRIMARY KEY,
     FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
-    Data_przystapienia DATE
+    Data_przystapienia DATE,
 );
 
 CREATE TABLE Para_deblowa (
@@ -103,29 +106,28 @@ CREATE TABLE Para_deblowa (
     FOREIGN KEY (PESEL_B) REFERENCES Zawodnik(PESEL)
 );
 
+-- Gospodarzem jest Zespol A
 CREATE TABLE Mecz(
 Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     Liczba_kibicow INT,
-    kolejka INT,
-    Data_spotkania DATE,
-    Id_zespolu_A INT,
-    Id_zespolu_B INT,
-    Pesel_sedziego VARCHAR(11),
-    Id_gospodarzy INT,
-    Id_zwyciezcy INT,
+    kolejka INT NOT NULL,
+    Data_spotkania DATE NOT NULL,
+    Id_zespolu_A INT NOT NULL,
+    Id_zespolu_B INT NOT NULL,
+    Pesel_sedziego VARCHAR(11) NOT NULL,
+    Id_zwyciezcy INT NOT NULL,
     FOREIGN KEY (Id_zespolu_A) REFERENCES Zespol(Zespol_id),
     FOREIGN KEY (Id_zespolu_B) REFERENCES Zespol(Zespol_id),
     FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel),
-    FOREIGN KEY (Id_gospodarzy) REFERENCES Zespol(Zespol_id),
     FOREIGN KEY (Id_zwyciezcy) REFERENCES Zespol(Zespol_id)
 );
 
 CREATE TABLE Pojedynek_singlowy (
     Id_poj_sing INT PRIMARY KEY IDENTITY(1,1),
-    Zawodnik_A VARCHAR(11),
-    Zawodnik_B VARCHAR(11),
-    Zwyciezca VARCHAR(11),
-    Id_meczu INT,
+    Zawodnik_A VARCHAR(11) NOT NULL,
+    Zawodnik_B VARCHAR(11) NOT NULL,
+    Zwyciezca VARCHAR(11) NOT NULL,
+    Id_meczu INT NOT NULL,
     FOREIGN KEY (Zawodnik_A) REFERENCES Zawodnik(Pesel),
     FOREIGN KEY (Zawodnik_B) REFERENCES Zawodnik(Pesel),
     FOREIGN KEY (Zwyciezca) REFERENCES Zawodnik(Pesel),
@@ -134,15 +136,15 @@ CREATE TABLE Pojedynek_singlowy (
 
 CREATE TABLE  Pojedynek_deblowy (
     Id_pojd_deb INT PRIMARY KEY IDENTITY(1,1),
-    Id_pary_a INT,
-    Id_pary_b INT,
-    Id_wygranych INT,
-    Id_meczu INT,
+    Id_pary_a INT NOT NULL,
+    Id_pary_b INT NOT NULL,
+    Id_wygranych INT NOT NULL,
+    Id_meczu INT NOT NULL,
     FOREIGN KEY (Id_pary_a) REFERENCES Para_deblowa(Id_pary),
     FOREIGN KEY (Id_pary_b) REFERENCES Para_deblowa(Id_pary),
     FOREIGN KEY (Id_wygranych) REFERENCES Para_deblowa(Id_pary),
     FOREIGN KEY (Id_meczu) REFERENCES Mecz(Id_meczu)
 );
 
-ALTER TABLE Zespol
-ADD Id_ligi INT FOREIGN KEY (Id_ligi) REFERENCES Liga(Id_ligi);
+--ALTER TABLE Zespol
+--ADD Id_ligi INT FOREIGN KEY (Id_ligi) REFERENCES Liga(Id_ligi);
