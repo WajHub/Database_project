@@ -28,9 +28,6 @@ CREATE TABLE Uchwyt(
 
 );
 
---CREATE TABLE Deska (
---    Nazwa_deski VARCHAR(31) NOT NULL PRIMARY KEY
---);
 
 -- Tabele
 
@@ -38,7 +35,7 @@ CREATE TABLE Hala (
     Hala_id INT IDENTITY(1,1) PRIMARY KEY,
 	Adres_id INT NOT NULL,
 	Pojemnosc_kibicow DECIMAL(10,0) CHECK (Pojemnosc_kibicow>=0 AND Pojemnosc_kibicow <=1000000),
-    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id)
+    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id) 
 );
 
 CREATE TABLE Druzyna(
@@ -47,7 +44,7 @@ CREATE TABLE Druzyna(
     Data_zalozenia DATE NOT NULL,
     Stoly VARCHAR(255),
     Pileczki VARCHAR(255),
-    id_Hali INT FOREIGN KEY REFERENCES Hala(Hala_id) NOT NULL
+    id_Hali INT FOREIGN KEY REFERENCES Hala(Hala_id) ON DELETE CASCADE NOT NULL 
 );
 
 CREATE TABLE Osoba (
@@ -115,36 +112,40 @@ Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     Id_zespolu_A INT NOT NULL,
     Id_zespolu_B INT NOT NULL,
     Pesel_sedziego VARCHAR(11) NOT NULL,
-    Id_zwyciezcy INT NOT NULL,
+    Id_zwyciezcy INT,
     FOREIGN KEY (Id_zespolu_A) REFERENCES Zespol(Zespol_id),
     FOREIGN KEY (Id_zespolu_B) REFERENCES Zespol(Zespol_id),
-    FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel),
-    FOREIGN KEY (Id_zwyciezcy) REFERENCES Zespol(Zespol_id)
+    FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel) ON DELETE CASCADE,
+    FOREIGN KEY (Id_zwyciezcy) REFERENCES Zespol(Zespol_id),
+    CHECK (Id_zespolu_A != Id_zespolu_B),
+    CHECK (Id_zwyciezcy = Id_zespolu_A OR Id_zwyciezcy = Id_zespolu_B)
 );
 
 CREATE TABLE Pojedynek_singlowy (
     Id_poj_sing INT PRIMARY KEY IDENTITY(1,1),
     Zawodnik_A VARCHAR(11) NOT NULL,
     Zawodnik_B VARCHAR(11) NOT NULL,
-    Zwyciezca VARCHAR(11) NOT NULL,
+    Zwyciezca VARCHAR(11),
     Id_meczu INT NOT NULL,
     FOREIGN KEY (Zawodnik_A) REFERENCES Zawodnik(Pesel),
     FOREIGN KEY (Zawodnik_B) REFERENCES Zawodnik(Pesel),
     FOREIGN KEY (Zwyciezca) REFERENCES Zawodnik(Pesel),
-    FOREIGN KEY (Id_meczu) REFERENCES Mecz(Id_meczu)
+    FOREIGN KEY (Id_meczu) REFERENCES Mecz(Id_meczu),
+    CHECK (Zawodnik_A != Zawodnik_B),
+    CHECK (Zwyciezca = Zawodnik_A OR Zwyciezca = Zawodnik_B)
 );
 
 CREATE TABLE  Pojedynek_deblowy (
     Id_pojd_deb INT PRIMARY KEY IDENTITY(1,1),
     Id_pary_a INT NOT NULL,
     Id_pary_b INT NOT NULL,
-    Id_wygranych INT NOT NULL,
+    Id_wygranych INT,
     Id_meczu INT NOT NULL,
     FOREIGN KEY (Id_pary_a) REFERENCES Para_deblowa(Id_pary),
     FOREIGN KEY (Id_pary_b) REFERENCES Para_deblowa(Id_pary),
     FOREIGN KEY (Id_wygranych) REFERENCES Para_deblowa(Id_pary),
-    FOREIGN KEY (Id_meczu) REFERENCES Mecz(Id_meczu)
+    FOREIGN KEY (Id_meczu) REFERENCES Mecz(Id_meczu),
+    CHECK (Id_pary_a != Id_pary_b),
+    CHECK (Id_wygranych = Id_pary_a OR Id_wygranych = Id_pary_b)
 );
 
---ALTER TABLE Zespol
---ADD Id_ligi INT FOREIGN KEY (Id_ligi) REFERENCES Liga(Id_ligi);
