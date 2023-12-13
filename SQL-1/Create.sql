@@ -49,7 +49,7 @@ CREATE TABLE Druzyna(
 );
 
 CREATE TABLE Osoba (
-    Pesel VARCHAR(11) PRIMARY KEY,
+    Pesel VARCHAR(11) CHECK (LEN(Pesel) = 11 AND Pesel NOT LIKE '%[^0-9]%') PRIMARY KEY,
     Imie Varchar(31) NOT NULL,
     Nazwisko Varchar(31) NOT NULL,
     Narodowosc VARCHAR(50) NOT NULL,
@@ -112,11 +112,11 @@ Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     Data_spotkania DATE NOT NULL,
     Id_zespolu_A INT NOT NULL,
     Id_zespolu_B INT NOT NULL,
-    Pesel_sedziego VARCHAR(11) NOT NULL,
+    Pesel_sedziego VARCHAR(11),
     Id_zwyciezcy INT,
     FOREIGN KEY (Id_zespolu_A) REFERENCES Zespol(Zespol_id),
     FOREIGN KEY (Id_zespolu_B) REFERENCES Zespol(Zespol_id),
-    FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel) ON DELETE CASCADE,
+    FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel),
     FOREIGN KEY (Id_zwyciezcy) REFERENCES Zespol(Zespol_id),
     CHECK (Id_zespolu_A != Id_zespolu_B),
     CHECK (Id_zwyciezcy = Id_zespolu_A OR Id_zwyciezcy = Id_zespolu_B),

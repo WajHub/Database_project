@@ -45,14 +45,14 @@ UPDATE Zawodnik SET Zespol = NULL WHERE Pesel = '99990001125';
 --DELETE
 
 --Sedzia odchodzi na emeryture:
+UPDATE Mecz SET Pesel_sedziego = NULL WHERE Pesel_sedziego = '00001111223';
 DELETE FROM Sedzia WHERE Pesel = '00001111223';
+UPDATE Mecz SET Pesel_sedziego = NULL WHERE Pesel_sedziego = '99990001112';
 DELETE FROM Sedzia WHERE Pesel = '99990001112';
 
 -- Usuniecie hali (np z powodu warunkow nienadajacyh sie do gry lub planu przebudowy hali)
-UPDATE Hala SET adres_id = NULL WHERE Adres_id = 20;
+UPDATE Druzyna SET id_Hali = NULL WHERE  id_Hali = 20;
 DELETE FROM Adres WHERE Adres_id = 20;
-UPDATE Druzyna SET Hala_id = NULL WHERE  Hala_id = 20;
-DELETE FROM Hala WHERE Hala_id = 20;
 
 --Anulowanie meczu w zwiazku z nieprzepisowymi warunkami:
 DELETE FROM Pojedynek_singlowy WHERE Id_meczu = 1;
