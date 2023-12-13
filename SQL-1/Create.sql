@@ -33,9 +33,9 @@ CREATE TABLE Uchwyt(
 
 CREATE TABLE Hala (
     Hala_id INT IDENTITY(1,1) PRIMARY KEY,
-	Adres_id INT NOT NULL,
+	Adres_id INT ,
 	Pojemnosc_kibicow DECIMAL(10,0) CHECK (Pojemnosc_kibicow>=0 AND Pojemnosc_kibicow <=1000000),
-    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id) 
+    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE Druzyna(
@@ -44,7 +44,8 @@ CREATE TABLE Druzyna(
     Data_zalozenia DATE NOT NULL,
     Stoly VARCHAR(255),
     Pileczki VARCHAR(255),
-    id_Hali INT FOREIGN KEY REFERENCES Hala(Hala_id) ON DELETE CASCADE NOT NULL 
+    id_Hali INT,
+    FOREIGN KEY (id_Hali) REFERENCES Hala (Hala_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE Osoba (
@@ -118,7 +119,8 @@ Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     FOREIGN KEY (Pesel_sedziego) REFERENCES Sedzia(Pesel) ON DELETE CASCADE,
     FOREIGN KEY (Id_zwyciezcy) REFERENCES Zespol(Zespol_id),
     CHECK (Id_zespolu_A != Id_zespolu_B),
-    CHECK (Id_zwyciezcy = Id_zespolu_A OR Id_zwyciezcy = Id_zespolu_B)
+    CHECK (Id_zwyciezcy = Id_zespolu_A OR Id_zwyciezcy = Id_zespolu_B),
+    CHECK (Liczba_kibicow >= 0)
 );
 
 CREATE TABLE Pojedynek_singlowy (
