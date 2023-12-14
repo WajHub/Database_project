@@ -1,11 +1,10 @@
 --CREATE DATABASE Tenis_stolowy;
 USE Tenis_stolowy;
 
-
-
 -- Tabele slownikowe
 
-CREATE TABLE Adres (
+CREATE TABLE Adres
+(
     Adres_id INT IDENTITY(1,1) PRIMARY KEY,
     Miasto VARCHAR(255) NOT NULL,
     Ulica VARCHAR(255) NOT NULL,
@@ -14,14 +13,16 @@ CREATE TABLE Adres (
 
 );
 
-CREATE TABLE Styl_gry(
+CREATE TABLE Styl_gry
+(
     Styl_id INT IDENTITY(1,1) PRIMARY KEY,
-    Styl  VARCHAR (20) NOT NULL CHECK (Styl IN('Ofensywny', 'Defensywny', 'Zrownowazony')) DEFAULT 'Zrownowazony',
+    Styl VARCHAR (20) NOT NULL CHECK (Styl IN('Ofensywny', 'Defensywny', 'Zrownowazony')) DEFAULT 'Zrownowazony',
     Opis VARCHAR(255) NOT NULL
 );
 
 
-CREATE TABLE Uchwyt(
+CREATE TABLE Uchwyt
+(
     Uchwyt_id INT IDENTITY (1,1) PRIMARY KEY,
     Reka VARCHAR (20) NOT NULL CHECK (Reka IN ('Lewa', 'Prawa'))DEFAULT 'Prawa',
     Uchwyt VARCHAR (20) NOT NULL CHECK (Uchwyt IN ('Europejski', 'Piorkowy'))DEFAULT 'Europejski',
@@ -31,24 +32,27 @@ CREATE TABLE Uchwyt(
 
 -- Tabele
 
-CREATE TABLE Hala (
+CREATE TABLE Hala
+(
     Hala_id INT IDENTITY(1,1) PRIMARY KEY,
-	Adres_id INT ,
-	Pojemnosc_kibicow DECIMAL(10,0) CHECK (Pojemnosc_kibicow>=0 AND Pojemnosc_kibicow <=1000000),
-    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id) ON DELETE CASCADE 
+    Adres_id INT ,
+    Pojemnosc_kibicow DECIMAL(10,0) CHECK (Pojemnosc_kibicow>=0 AND Pojemnosc_kibicow <=1000000),
+    FOREIGN KEY (Adres_id) REFERENCES Adres (Adres_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Druzyna(
+CREATE TABLE Druzyna
+(
     Nazwa varchar (255) NOT NULL PRIMARY KEY ,
-   --Miejscowosc VARCHAR(255) NOT NULL,
+    --Miejscowosc VARCHAR(255) NOT NULL,
     Data_zalozenia DATE NOT NULL,
     Stoly VARCHAR(255),
     Pileczki VARCHAR(255),
     id_Hali INT,
-    FOREIGN KEY (id_Hali) REFERENCES Hala (Hala_id) ON DELETE CASCADE 
+    FOREIGN KEY (id_Hali) REFERENCES Hala (Hala_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Osoba (
+CREATE TABLE Osoba
+(
     Pesel VARCHAR(11) CHECK (LEN(Pesel) = 11 AND Pesel NOT LIKE '%[^0-9]%') PRIMARY KEY,
     Imie Varchar(31) NOT NULL,
     Nazwisko Varchar(31) NOT NULL,
@@ -58,27 +62,31 @@ CREATE TABLE Osoba (
 );
 
 
-CREATE TABLE Trener(
+CREATE TABLE Trener
+(
     Pesel VARCHAR(11) PRIMARY KEY,
     Druzyna VARCHAR(255),
     Specjalizacja VARCHAR (255) NOT NULL
-    FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
-    FOREIGN KEY (Druzyna) REFERENCES Druzyna(Nazwa)
+        FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
+    FOREIGN KEY (Druzyna) REFERENCES Druzyna(Nazwa) ON UPDATE CASCADE
 );
 
-CREATE TABLE Liga (
+CREATE TABLE Liga
+(
     Id_ligi INT IDENTITY(1,1) PRIMARY KEY,
     Nazwa VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Zespol(
+CREATE TABLE Zespol
+(
     Zespol_id INT IDENTITY(1,1) PRIMARY KEY,
     Nazwa VARCHAR(255) NOT NULL,
-    FOREIGN KEY (Nazwa) REFERENCES Druzyna(Nazwa),
+    FOREIGN KEY (Nazwa) REFERENCES Druzyna(Nazwa) ON UPDATE CASCADE,
     Id_ligi INT FOREIGN KEY (Id_ligi) REFERENCES Liga(Id_ligi)
 );
 
-CREATE TABLE Zawodnik (
+CREATE TABLE Zawodnik
+(
     Pesel VARCHAR(11) PRIMARY KEY,
     FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
     Uchwyt INT NOT NULL,
@@ -90,13 +98,15 @@ CREATE TABLE Zawodnik (
     FOREIGN KEY (Zespol) REFERENCES Zespol(Zespol_id),
 );
 
-CREATE TABLE Sedzia(
+CREATE TABLE Sedzia
+(
     Pesel VARCHAR(11) PRIMARY KEY,
     FOREIGN KEY (Pesel) REFERENCES Osoba(Pesel),
     Data_przystapienia DATE,
 );
 
-CREATE TABLE Para_deblowa (
+CREATE TABLE Para_deblowa
+(
     Id_pary INT PRIMARY KEY IDENTITY(1,1),
     PESEL_A VARCHAR(11),
     PESEL_B VARCHAR(11),
@@ -105,8 +115,9 @@ CREATE TABLE Para_deblowa (
 );
 
 -- Gospodarzem jest Zespol A
-CREATE TABLE Mecz(
-Id_meczu INT PRIMARY KEY IDENTITY(1,1),
+CREATE TABLE Mecz
+(
+    Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     Liczba_kibicow INT,
     kolejka INT NOT NULL,
     Data_spotkania DATE NOT NULL,
@@ -123,7 +134,8 @@ Id_meczu INT PRIMARY KEY IDENTITY(1,1),
     CHECK (Liczba_kibicow >= 0)
 );
 
-CREATE TABLE Pojedynek_singlowy (
+CREATE TABLE Pojedynek_singlowy
+(
     Id_poj_sing INT PRIMARY KEY IDENTITY(1,1),
     Zawodnik_A VARCHAR(11) NOT NULL,
     Zawodnik_B VARCHAR(11) NOT NULL,
@@ -137,7 +149,8 @@ CREATE TABLE Pojedynek_singlowy (
     CHECK (Zwyciezca = Zawodnik_A OR Zwyciezca = Zawodnik_B)
 );
 
-CREATE TABLE  Pojedynek_deblowy (
+CREATE TABLE Pojedynek_deblowy
+(
     Id_pojd_deb INT PRIMARY KEY IDENTITY(1,1),
     Id_pary_a INT NOT NULL,
     Id_pary_b INT NOT NULL,
