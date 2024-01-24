@@ -1,1 +1,1 @@
-Database project for University of Technology. More Details in report.
+Modeling and creation of a database project for the University of Technology. More details in the report.
